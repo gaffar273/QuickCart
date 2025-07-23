@@ -46,7 +46,10 @@ import product_details_page_apple_earphone_image2 from "./product_details_page_a
 import product_details_page_apple_earphone_image3 from "./product_details_page_apple_earphone_image3.png";
 import product_details_page_apple_earphone_image4 from "./product_details_page_apple_earphone_image4.png";
 import product_details_page_apple_earphone_image5 from "./product_details_page_apple_earphone_image5.png";
-import kartza1 from "./kartza1.jpg"
+import kartza1 from "./kartza1.jpg";
+import c991es from "./c991es.png"
+import c991cw from "./c991cw.png"
+import edkit from "./edkit.jpeg"
 
 export const assets = {
   logo,
@@ -97,7 +100,10 @@ export const assets = {
   product_details_page_apple_earphone_image3,
   product_details_page_apple_earphone_image4,
   product_details_page_apple_earphone_image5,
-  checkmark
+  checkmark,
+  c991es,
+  c991cw,
+  edkit
 };
 
 export const BagIcon = () => {
