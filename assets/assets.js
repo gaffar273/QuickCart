@@ -46,9 +46,11 @@ import product_details_page_apple_earphone_image2 from "./product_details_page_a
 import product_details_page_apple_earphone_image3 from "./product_details_page_apple_earphone_image3.png";
 import product_details_page_apple_earphone_image4 from "./product_details_page_apple_earphone_image4.png";
 import product_details_page_apple_earphone_image5 from "./product_details_page_apple_earphone_image5.png";
+import kartza1 from "./kartza1.jpg"
 
 export const assets = {
   logo,
+  kartza1,
   search_icon,
   user_icon,
   cart_icon,
