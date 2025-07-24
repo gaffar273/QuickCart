@@ -12,7 +12,7 @@ const Footer = () => {
         <div className="w-4/5">
           <Image
             className="w-28 sm:w-36 md:w-44 lg:w-52 xl:w-60 object-contain"
-            src={assets.kartza1}
+            src={assets.logo_v2}
             alt="logo"
           />
           <p className="mt-6 text-sm">
