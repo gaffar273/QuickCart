@@ -3,6 +3,7 @@ import connectDB from "./db";
 import User from "@/models/user";
 import Order from "@/models/order";
 import mongoose from "mongoose";
+import Address from "@/models/address";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "kartza" });
