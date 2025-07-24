@@ -3,6 +3,7 @@ import Order from "@/models/order";
 import Product from "@/models/product";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import connectDB from "@/config/db";
 
 export async function GET(request) {
     try {
