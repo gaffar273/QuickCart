@@ -50,9 +50,11 @@ import kartza1 from "./kartza1.jpg";
 import c991es from "./c991es.png"
 import c991cw from "./c991cw.png"
 import edkit from "./edkit.jpeg"
+import logo_v2 from "./logo_v2.png"
 
 export const assets = {
   logo,
+  logo_v2,
   kartza1,
   search_icon,
   user_icon,
