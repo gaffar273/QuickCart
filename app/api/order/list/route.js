@@ -18,6 +18,7 @@ export async function GET(request) {
 
         return NextResponse.json({ success: true, orders })
     } catch (error) {
-        return NextResponse.json({ success: false, message: error.messaage })
+        return NextResponse.json({ success: false, message: error.message }) 
+
     }
 }
