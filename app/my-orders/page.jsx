@@ -26,17 +26,17 @@ const MyOrders = () => {
                 setOrders(data.orders.reverse())
                 setLoading(false)
             }
-        }catch(error){
+        } catch (error) {
             toast.error(error.message)
         }
-        
+
     }
 
     useEffect(() => {
-        if(user){
-fetchOrders();
+        if (user) {
+            fetchOrders();
         }
-        
+
     }, [user]);
 
     return (
@@ -56,7 +56,8 @@ fetchOrders();
                                     />
                                     <p className="flex flex-col gap-3">
                                         <span className="font-medium text-base">
-                                            {order.items.map((item) => item.product.name + ` x ${item.quantity}`).join(", ")}
+                                            {order.items.map((item) => (item.product?.name || "Unnamed Product") + ` x ${item.quantity}`).join(", ")}
+
                                         </span>
                                         <span>Items : {order.items.length}</span>
                                     </p>
