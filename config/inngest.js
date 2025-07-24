@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import connectDB from "./db";
 import User from "@/models/user";
 import Order from "@/models/order";
+import mongoose from "mongoose";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "kartza" });
@@ -75,10 +76,11 @@ export const createUserOrder = inngest.createFunction(
                 userId: event.data.userId,
                 items: event.data.items,
                 amount: event.data.amount,
-                address: event.data.address,
+                address: new mongoose.Types.ObjectId(event.data.address), 
                 date: event.data.date
             }
-        })
+        });
+
 
         await connectDB()
         await Order.insertMany(orders)
@@ -87,3 +89,5 @@ export const createUserOrder = inngest.createFunction(
 
     }
 )
+import mongoose from "mongoose";
+
