@@ -4,6 +4,7 @@ import { AppContextProvider } from "@/context/AppContext";
 import { Toaster } from "react-hot-toast";
 import { ClerkProvider } from "@clerk/nextjs";
 import "@/lib/fontawesome"
+import RazorpayScript from "@/components/RazorpayScript";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en">
         <body className={`${outfit.className} antialiased text-gray-700`} >
+          <RazorpayScript />
           <Toaster />
           <AppContextProvider>
             {children}

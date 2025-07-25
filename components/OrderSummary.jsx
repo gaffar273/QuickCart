@@ -122,6 +122,9 @@ const OrderSummary = () => {
         Order Summary
       </h2>
       <hr className="border-gray-500/30 my-5" />
+      <div className="mb-4 p-3 bg-blue-100 text-blue-800 rounded text-center text-sm font-medium">
+        Only prepaid orders are supported. Your order will be placed after successful payment.
+      </div>
       <div className="space-y-6">
         <div>
           <label className="text-base font-medium uppercase text-gray-600 block mb-2">
@@ -204,7 +207,7 @@ const OrderSummary = () => {
       </div>
 
       <button onClick={createOrder} className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700">
-        Place Order
+        Pay and Order
       </button>
     </div>
   );
