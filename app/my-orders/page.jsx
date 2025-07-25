@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 import Loading from "@/components/Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
+import PayNowButton from "@/components/PayNowButton";
+
 
 const MyOrders = () => {
 
@@ -74,13 +76,15 @@ const MyOrders = () => {
                                     </p>
                                 </div>
                                 <p className="font-medium my-auto">{currency}{order.amount}</p>
-                                <div>
-                                    <p className="flex flex-col">
-                                        <span>Method : COD</span>
-                                        <span>Date : {new Date(order.date).toLocaleDateString()}</span>
-                                        <span>Payment : Pending</span>
-                                    </p>
+                                <div className="flex flex-col gap-1">
+                                    <span>Method : {order.paymentType}</span>
+                                    <span>Date : {new Date(order.date).toLocaleDateString()}</span>
+                                    <span>Payment : {order.isPaid ? "✅ Paid" : "❌ Pending"}</span>
+                                    {!order.isPaid && (
+                                        <PayNowButton orderId={order._id} amount={order.amount} />
+                                    )}
                                 </div>
+
                             </div>
                         ))}
                     </div>)}

@@ -51,6 +51,7 @@ import c991es from "./c991es.png"
 import c991cw from "./c991cw.png"
 import edkit from "./edkit.jpeg"
 import logo_v2 from "./logo_v2.png"
+import img1 from "./img1.jpg"
 
 export const assets = {
   logo,
@@ -105,7 +106,8 @@ export const assets = {
   checkmark,
   c991es,
   c991cw,
-  edkit
+  edkit,
+  img1
 };
 
 export const BagIcon = () => {

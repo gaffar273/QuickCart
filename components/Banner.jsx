@@ -6,7 +6,7 @@ const Banner = () => {
   return (
     <div className="flex flex-col md:flex-row items-center justify-between md:pl-20 py-14 md:py-0 bg-[#E6E9F2] my-16 rounded-xl overflow-hidden">
       <Image
-        className="max-w-56"
+        className="max-w-256"
         src={assets.c991cw}
         alt=""
       />
@@ -23,14 +23,10 @@ const Banner = () => {
       </div>
       <Image
         className="hidden md:block max-w-80"
-        src={assets.md_controller_image}
+        src={assets.img1}
         alt="md_controller_image"
       />
-      <Image
-        className="md:hidden"
-        src={assets.sm_controller_image}
-        alt="sm_controller_image"
-      />
+      
     </div>
   );
 };

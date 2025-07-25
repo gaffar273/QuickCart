@@ -1,4 +1,5 @@
 import { inngest } from "@/config/inngest";
+import Order from "@/models/order";
 import Product from "@/models/product";
 import User from "@/models/user";
 import { getAuth } from "@clerk/nextjs/server";
@@ -20,15 +21,15 @@ export async function POST (request){
             return await acc+product.offerPrice*item.quantity
         },0)
 
-        await inngest.send({
-            name:'order/created',
-            data:{
+        await Order.create({
+            
                 userId,
                 address,
                 items,
                 amount,
-                date:Date.now()
-            }
+                date:Date.now(),
+                paymentType:'PrePaid'
+            
         })
 
         //clr user cart
