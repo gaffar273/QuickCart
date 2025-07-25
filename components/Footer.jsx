@@ -4,6 +4,7 @@ import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInstagram } from "@fortawesome/free-brands-svg-icons";
 import { faPhone, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -16,10 +17,8 @@ const Footer = () => {
             alt="logo"
           />
           <p className="mt-6 text-sm">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book.
+            Built for students, by students — Kartza understands your academic needs.
+            Quick orders, smooth service, and trusted quality.
           </p>
         </div>
 
@@ -28,18 +27,19 @@ const Footer = () => {
             <h2 className="font-medium text-gray-900 mb-5">Company</h2>
             <ul className="text-sm space-y-2">
               <li>
-                <a className="hover:underline transition" href="#">Home</a>
+                <Link className="hover:underline transition" href="/">Home</Link>
               </li>
               <li>
-                <a className="hover:underline transition" href="#">About us</a>
+                <Link className="hover:underline transition" href="/about">About us</Link>
               </li>
               <li>
-                <a className="hover:underline transition" href="#">Contact us</a>
+                <Link className="hover:underline transition" href="/contact">Contact us</Link>
               </li>
               <li>
-                <a className="hover:underline transition" href="#">Privacy policy</a>
+                <Link className="hover:underline transition" href="/privacy-policy">Privacy policy</Link>
               </li>
             </ul>
+
           </div>
         </div>
 
@@ -49,7 +49,7 @@ const Footer = () => {
             <div className="text-sm space-y-2">
               <p><FontAwesomeIcon icon={faPhone} className="text-gray-700 text-lg mr-2" />+91 7001656191</p>
               <p><FontAwesomeIcon icon={faEnvelope} className="text-gray-700 text-lg mr-2" />kartzaforyou@gmail.com</p>
-              <a href="https://www.instagram.com/kartzaforyou/profilecard/?igsh=NWNjcGFnb2Y0MmFi"><FontAwesomeIcon icon={faInstagram} className="text-pink-600 text-xl hover:text-pink-800" />
+              <a href="https://www.instagram.com/kartzaforyou/profilecard/?igsh=NWNjcGFnb2Y0MmFi"><FontAwesomeIcon icon={faInstagram} className="text-pink-600 text-xl hover:text-pink-800" /> Follow Our Instagram page
               </a>
             </div>
           </div>
