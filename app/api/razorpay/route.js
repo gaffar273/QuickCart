@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
+import crypto from "crypto";
+import Order from "@/models/order";
+import mongoose from "mongoose";
 
 export async function POST(request) {
   try {
@@ -34,6 +37,27 @@ export async function POST(request) {
 }
 
 // Placeholder for payment verification (to be implemented if needed)
-// export async function PUT(request) {
-//   // verify payment signature here
-// } 
+export async function PUT(request) {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = await request.json();
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature || !orderId) {
+      return NextResponse.json({ success: false, message: "Missing payment verification fields" }, { status: 400 });
+    }
+
+    const generated_signature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(razorpay_order_id + "|" + razorpay_payment_id)
+      .digest("hex");
+
+    if (generated_signature === razorpay_signature) {
+      // Mark order as paid
+      await mongoose.connect(process.env.MONGODB_URI);
+      await Order.findByIdAndUpdate(orderId, { isPaid: true });
+      return NextResponse.json({ success: true, message: "Payment verified and order marked as paid" });
+    } else {
+      return NextResponse.json({ success: false, message: "Invalid signature" }, { status: 400 });
+    }
+  } catch (error) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+  }
+} 

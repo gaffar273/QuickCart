@@ -21,9 +21,31 @@ const PayNowButton = ({ orderId, amount }) => {
       name: "Kartza",
       description: "Order Payment",
       order_id: data.orderId,
-      handler: function (response) {
-        alert("✅ Payment successful!");
-        // Optionally, you can send this response to your backend to mark order paid
+      handler: async function (response) {
+        try {
+          const verifyRes = await fetch("/api/razorpay", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              orderId, // your internal order MongoDB ID
+            }),
+          });
+
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            alert("✅ Payment verified and order marked as paid!");
+            window.location.reload();
+          } else {
+            alert("❌ Payment verification failed: " + verifyData.message);
+          }
+        } catch (err) {
+          alert("❌ Error verifying payment: " + err.message);
+        }
       },
       prefill: {
         name: "IITian", // Optional
