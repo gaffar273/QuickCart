@@ -4,15 +4,16 @@ import Product from "@/models/product";
 import User from "@/models/user";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 
 
 export async function POST (request){
     try{
         const {userId}=getAuth(request)
-        const {address,items}=await request.json()
+        const {address,items, razorpay_order_id, razorpay_payment_id, razorpay_signature, amount: clientAmount} = await request.json()
 
-        if(!address || items.length===0){
-            return NextResponse.json({success:false,message:"Invalid data"})
+        if(!address || items.length===0 || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature){
+            return NextResponse.json({success:false,message:"Invalid data or missing payment details"})
         }
 
         //calculate amount 
@@ -21,15 +22,28 @@ export async function POST (request){
             return await acc+product.offerPrice*item.quantity
         },0)
 
+        if (amount !== clientAmount) {
+            return NextResponse.json({success:false,message:"Amount mismatch"})
+        }
+
+        // Verify payment signature
+        const generated_signature = crypto
+            .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+            .update(razorpay_order_id + "|" + razorpay_payment_id)
+            .digest("hex");
+
+        if (generated_signature !== razorpay_signature) {
+            return NextResponse.json({success:false,message:"Payment verification failed"})
+        }
+
         await Order.create({
-            
                 userId,
                 address,
                 items,
                 amount,
                 date:Date.now(),
-                paymentType:'PrePaid'
-            
+                paymentType:'PrePaid',
+                isPaid: true
         })
 
         //clr user cart

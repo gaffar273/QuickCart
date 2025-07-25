@@ -49,20 +49,61 @@ const OrderSummary = () => {
         return toast.error('cart is empty')
       }
       const token = await getToken()
+      const amount = getCartAmount();
 
-      const { data } = await axios.post('/api/order/create', {
-        address: selectedAddress._id,
-        items: cartItemsArray
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      if (data.success) {
-        toast.success(data.message)
-        setCartItems({})
-        router.push('/order-placed')
-      } else {
-        toast.error(data.message)
+      // 1. Create Razorpay order on backend
+      const razorpayOrderRes = await axios.post('/api/razorpay', {
+        amount,
+        orderId: Math.random().toString(36).substring(2, 15) // random string as receipt
+      });
+      const razorpayOrder = razorpayOrderRes.data;
+      if (!razorpayOrder.orderId) {
+        return toast.error('Failed to initiate payment');
       }
+
+      // 2. Open Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: razorpayOrder.amount,
+        currency: 'INR',
+        name: 'Kartza',
+        description: 'Order Payment',
+        order_id: razorpayOrder.orderId,
+        handler: async function (response) {
+          // 3. After payment, create order in backend with payment details
+          try {
+            const { data } = await axios.post('/api/order/create', {
+              address: selectedAddress._id,
+              items: cartItemsArray,
+              amount,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            }, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            if (data.success) {
+              toast.success(data.message)
+              setCartItems({})
+              router.push('/order-placed')
+            } else {
+              toast.error(data.message)
+            }
+          } catch (error) {
+            toast.error(error.message)
+          }
+        },
+        prefill: {
+          name: user?.firstName || '',
+          email: user?.email || '',
+          contact: '',
+        },
+        theme: {
+          color: '#3e51df',
+        },
+      };
+      const razor = new window.Razorpay(options);
+      razor.open();
     } catch (error) {
       toast.error(error.message)
     }
