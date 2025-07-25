@@ -9,7 +9,12 @@ import crypto from "crypto";
 
 export async function POST (request){
     try{
-        const {userId}=getAuth(request)
+        const auth = getAuth(request);
+        console.log("getAuth result:", auth);
+        const {userId} = auth;
+        if (!userId) {
+            return NextResponse.json({ success: false, message: "User not authenticated" }, { status: 401 });
+        }
         const {address,items, razorpay_order_id, razorpay_payment_id, razorpay_signature, amount: clientAmount} = await request.json()
 
         if(!address || items.length===0 || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature){
