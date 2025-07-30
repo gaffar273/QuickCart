@@ -14,7 +14,6 @@ const Orders = () => {
   const { currency, getToken, user } = useAppContext();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [orderStatuses, setOrderStatuses] = useState({}); // State to hold selected statuses
 
   const fetchSellerOrders = async () => {
     try {
@@ -25,53 +24,14 @@ const Orders = () => {
 
       if (data.success) {
         setOrders(data.orders);
-        // Initialize orderStatuses with current order statuses
-        const initialStatuses = {};
-        data.orders.forEach(order => {
-          initialStatuses[order._id] = order.status || 'Pending'; // Default to Pending if status is not set
-        });
-        setOrderStatuses(initialStatuses);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error('Error fetching orders:', error);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrderStatuses(prevStatuses => ({
-      ...prevStatuses,
-      [orderId]: newStatus
-    }));
-  };
-
-  const updateOrderStatus = async (orderId) => {
-    try {
-      const token = await getToken();
-      const newStatus = orderStatuses[orderId];
-      const { data } = await axios.post('/api/order/update-status', {
-        orderId,
-        status: newStatus
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (data.success) {
-        toast.success('Order status updated successfully!');
-        // Update the order in the local state
-        setOrders(prevOrders =>
-          prevOrders.map(order =>
-            order._id === orderId ? { ...order, status: newStatus } : order
-          )
-        );
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
     }
   };
 
@@ -131,25 +91,78 @@ const Orders = () => {
                     <span>Payment: {order.isPaid ? "✅ Paid" : "❌ Pending"}</span>
                     <span>Date: {new Date(order.date).toLocaleDateString()}</span>
                     <div className="mt-2">
+                      <label className="block text-sm font-medium text-gray-700">Payment Status:</label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <select 
+                          className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                          value={order.isPaid ? "true" : "false"}
+                          onChange={async (e) => {
+                            try {
+                              setLoading(true);
+                              const token = await getToken();
+                              const isPaid = e.target.value === "true";
+                              const { data } = await axios.post('/api/order/update-payment', 
+                                { orderId: order._id, isPaid },
+                                { headers: { Authorization: `Bearer ${token}` } }
+                              );
+                              if (data.success) {
+                                toast.success("Payment status updated successfully");
+                                // Update the order in the local state immediately
+                                setOrders(prevOrders =>
+                                  prevOrders.map(o =>
+                                    o._id === order._id ? { ...o, isPaid } : o
+                                  )
+                                );
+                                // Then refresh all orders to ensure consistency
+                                fetchSellerOrders();
+                              } else {
+                                toast.error(data.message);
+                              }
+                            } catch (error) {
+                              console.error("Payment update error:", error);
+                              toast.error(error.response?.data?.message || "Failed to update payment status");
+                            } finally {
+                              setLoading(false);
+                            }
+                          }}
+                        >
+                          <option value="true">Paid</option>
+                          <option value="false">Pending</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="mt-2">
                       <label className="block text-sm font-medium text-gray-700">Order Status:</label>
                       <select 
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         value={order.status || "Verification Pending"}
                         onChange={async (e) => {
                           try {
+                            setLoading(true);
                             const token = await getToken();
+                            const newStatus = e.target.value;
                             const { data } = await axios.put(`/api/order/update-status/${order._id}`, 
-                              { status: e.target.value },
+                              { status: newStatus },
                               { headers: { Authorization: `Bearer ${token}` } }
                             );
                             if (data.success) {
                               toast.success("Status updated successfully");
-                              fetchSellerOrders(); // Refresh orders
+                              // Update the order in the local state immediately
+                              setOrders(prevOrders =>
+                                prevOrders.map(o =>
+                                  o._id === order._id ? { ...o, status: newStatus } : o
+                                )
+                              );
+                              // Then refresh all orders to ensure consistency
+                              fetchSellerOrders();
                             } else {
                               toast.error(data.message);
                             }
                           } catch (error) {
-                            toast.error("Failed to update status");
+                            console.error("Status update error:", error);
+                            toast.error(error.response?.data?.message || "Failed to update status");
+                          } finally {
+                            setLoading(false);
                           }
                         }}
                       >
@@ -162,25 +175,6 @@ const Orders = () => {
                       </select>
                     </div>
                   </p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <select
-                      value={orderStatuses[order._id] || ''}
-                      onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                      className="border rounded p-1 text-sm"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Processing">Processing</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Delivered</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                    <button
-                      onClick={() => updateOrderStatus(order._id)}
-                      className="bg-[#3e51df] text-white px-3 py-1 rounded text-sm"
-                    >
-                      Update Status
-                    </button>
-                  </div>
                   <p className="mt-1 text-sm text-gray-600">Current Status: {order.status || 'Pending'}</p>
                 </div>
               </div>

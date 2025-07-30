@@ -6,11 +6,19 @@ import axios from "axios";
 import BookNowButton from "./BookNowButton"; // Import the new component
 
 const OrderSummary = () => {
+  const {
+    currency,
+    router,
+    getCartCount,
+    getCartAmount,
+    getToken,
+    user,
+    cartItems,
+    setCartItems
+  } = useAppContext();
 
-  const { currency, router, getCartCount, getCartAmount, getToken, user, cartItems, setCartItems } = useAppContext()
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const [userAddresses, setUserAddresses] = useState([]);
 
   const fetchUserAddresses = async () => {
@@ -32,7 +40,6 @@ const OrderSummary = () => {
     }
   };
 
-
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
     setIsDropdownOpen(false);
@@ -41,57 +48,64 @@ const OrderSummary = () => {
   const createOrder = async () => {
     try {
       if (!selectedAddress) {
-        return toast.error('please select an address')
+        return toast.error('Please select an address');
       }
-      let cartItemsArray = Object.keys(cartItems).map((key) => ({ product: key, quantity: cartItems[key] }))
-      cartItemsArray = cartItemsArray.filter(item => item.quantity > 0)
+
+      let cartItemsArray = Object.keys(cartItems).map((key) => ({
+        product: key,
+        quantity: cartItems[key]
+      })).filter(item => item.quantity > 0);
 
       if (cartItemsArray.length === 0) {
-        return toast.error('cart is empty')
+        return toast.error('Cart is empty');
       }
-      const token = await getToken()
+
+      const token = await getToken();
       const amount = getCartAmount();
 
-      // Create order in backend without payment verification
-      try {
-        const { data } = await axios.post('/api/order/create', {
-          address: selectedAddress._id,
-          items: cartItemsArray,
-          amount
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (data.success) {
-          toast.success(data.message)
-          setCartItems({})
-          router.push('/order-placed')
-        } else {
-          toast.error(data.message)
-        }
-      } catch (error) {
-        toast.error(error.message)
+      const { data } = await axios.post('/api/order/create', {
+        address: selectedAddress._id,
+        items: cartItemsArray,
+        amount,
+        status: "Verification Pending"
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+        setCartItems({});
+
+        // Open Google Form in new tab
+        const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/viewform";
+        const formWithParams = `${googleFormUrl}?usp=pp_url&entry.12345=${data.order._id}&entry.67890=${amount}`;
+        window.open(formWithParams, '_blank');
+
+        // Redirect
+        router.push('/order-placed');
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   useEffect(() => {
     if (user) {
       fetchUserAddresses();
     }
-
-  }, [user])
+  }, [user]);
 
   return (
     <div className="w-full md:w-96 bg-gray-500/5 p-5">
-      <h2 className="text-xl md:text-2xl font-medium text-gray-700">
-        Order Summary
-      </h2>
+      <h2 className="text-xl md:text-2xl font-medium text-gray-700">Order Summary</h2>
       <hr className="border-gray-500/30 my-5" />
+
       <div className="mb-4 p-3 bg-green-100 text-green-800 rounded text-center text-sm font-medium">
         Book your order through our Google Form. We'll contact you to confirm your order details.
       </div>
+
       <div className="space-y-6">
         <div>
           <label className="text-base font-medium uppercase text-gray-600 block mb-2">
@@ -107,8 +121,12 @@ const OrderSummary = () => {
                   ? `${selectedAddress.fullName}, ${selectedAddress.hallOfResidence}, ${selectedAddress.phoneNumber}`
                   : "Select Address"}
               </span>
-              <svg className={`w-5 h-5 inline float-right transition-transform duration-200 ${isDropdownOpen ? "rotate-0" : "-rotate-90"}`}
-                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#6B7280"
+              <svg
+                className={`w-5 h-5 inline float-right transition-transform duration-200 ${isDropdownOpen ? "rotate-0" : "-rotate-90"}`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="#6B7280"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -125,7 +143,6 @@ const OrderSummary = () => {
                     {address.fullName}, {address.hallOfResidence}, {address.phoneNumber}
                   </li>
                 ))}
-
                 <li
                   onClick={() => router.push("/add-address")}
                   className="px-4 py-2 hover:bg-gray-500/10 cursor-pointer text-center"
@@ -169,11 +186,10 @@ const OrderSummary = () => {
             <p>Total</p>
             <p>{currency}{getCartAmount()}</p>
           </div>
-
         </div>
       </div>
 
-      {/* Use the new BookNowButton component */}      
+      {/* BookNow Button Component */}
       <BookNowButton 
         selectedAddress={selectedAddress}
         cartItems={cartItems}
