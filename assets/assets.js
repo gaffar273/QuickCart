@@ -47,8 +47,9 @@ import product_details_page_apple_earphone_image3 from "./product_details_page_a
 import product_details_page_apple_earphone_image4 from "./product_details_page_apple_earphone_image4.png";
 import product_details_page_apple_earphone_image5 from "./product_details_page_apple_earphone_image5.png";
 import kartza1 from "./kartza1.jpg";
-import c991es from "./c991es.png"
-import c991cw from "./c991cw.png"
+// Replace PNG imports with existing SVG equivalents
+import c991cw from './c991cw.svg';
+import c991es from './c991es.svg';
 import edkit from "./edkit.jpeg"
 import logo_v2 from "./logo_v2.png"
 import img1 from "./img1.jpg"
