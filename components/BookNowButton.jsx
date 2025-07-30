@@ -4,7 +4,7 @@ import React from 'react';
 const BookNowButton = ({ orderId, amount }) => {
   const handleBooking = () => {
     // Replace this URL with your actual Google Form link
-    const googleFormUrl = "https://forms.google.com/your-form-id";
+    const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/edit?usp=drivesdk";
     window.open(googleFormUrl, '_blank');
   };
 
