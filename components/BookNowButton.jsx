@@ -7,7 +7,7 @@ const BookNowButton = () => {
 
   const handleBooking = () => {
     // Redirect to the updated Google Form link
-    window.open("https://docs.google.com/forms/d/e/1FAIpQLSdz4A3nJ1B8G7l7wVw1Xq0o5o91g5h0z9z5m0w/viewform?usp=sf_link", "_blank");
+    window.open("https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/viewform?edit_requested=true", "_blank");
     // Optionally, clear cart and navigate to order placed page after redirect
     setCartItems({}); // Clear cart
     router.push('/order-placed'); // Navigate to order placed page
