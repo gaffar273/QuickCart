@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar";
 import Loading from "@/components/Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
-import PayNowButton from "@/components/PayNowButton";
+import BookNowButton from "@/components/BookNowButton";
 
 
 const MyOrders = () => {
@@ -81,7 +81,7 @@ const MyOrders = () => {
                                     <span>Date : {new Date(order.date).toLocaleDateString()}</span>
                                     <span>Payment : {order.isPaid ? "✅ Paid" : "❌ Pending"}</span>
                                     {!order.isPaid && (
-                                        <PayNowButton orderId={order._id} amount={order.amount} />
+                                        <BookNowButton orderId={order._id} amount={order.amount} />
                                     )}
                                 </div>
 
