@@ -1,21 +1,66 @@
-'use client';
-import React from 'react';
+import { useAppContext } from "@/context/AppContext";
+import React from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
 
-const BookNowButton = ({ orderId, amount }) => {
-  const handleBooking = () => {
-    // Replace this URL with your actual Google Form link
-    const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/edit?usp=drivesdk";
-    window.open(googleFormUrl, '_blank');
+const BookNowButton = ({ selectedAddress, cartItems, getCartAmount }) => {
+  const { user, getToken, setCartItems, router } = useAppContext();
+
+  const handleBooking = async () => {
+    if (!selectedAddress) {
+      return toast.error('Please select an address');
+    }
+
+    let cartItemsArray = Object.keys(cartItems).map((key) => ({
+      product: key,
+      quantity: cartItems[key],
+    }));
+    cartItemsArray = cartItemsArray.filter((item) => item.quantity > 0);
+
+    if (cartItemsArray.length === 0) {
+      return toast.error('Your cart is empty');
+    }
+
+    try {
+      const token = await getToken();
+      const amount = getCartAmount();
+
+      const { data } = await axios.post(
+        '/api/order/manual-add',
+        {
+          userId: user._id, // Assuming user ID is available in the user object
+          address: selectedAddress._id,
+          items: cartItemsArray,
+          amount,
+          paymentType: "Google Form",
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        setCartItems({}); // Clear cart after successful order
+        // Redirect to Google Form after successful order creation in backend
+        window.open("https://docs.google.com/forms/d/e/1FAIpQLSdz4A3nJ1B8G7l7wVw1Xq0o5o91g5h0z9z5m0w/viewform?usp=sf_link", "_blank");
+        router.push('/order-placed');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   return (
     <button
-      className="bg-[#3e51df] text-white px-4 py-2 rounded hover:bg-[#3240b5] transition"
       onClick={handleBooking}
+      className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700"
     >
       Book Your Order
     </button>
   );
 };
 
-export default BookNowButton; 
+export default BookNowButton;
