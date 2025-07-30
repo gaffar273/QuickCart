@@ -7,6 +7,13 @@ const BookNowButton = ({ selectedAddress, cartItems, getCartAmount }) => {
   const { user, getToken, setCartItems, router } = useAppContext();
 
   const handleBooking = async () => {
+    if (!user || !user._id) {
+      toast.error('Please log in to book your order');
+      // Optionally, redirect to login page
+      // router.push('/login');
+      return;
+    }
+
     if (!selectedAddress) {
       return toast.error('Please select an address');
     }
@@ -26,7 +33,7 @@ const BookNowButton = ({ selectedAddress, cartItems, getCartAmount }) => {
       const amount = getCartAmount();
 
       const orderData = {
-        userId: user?._id, // Assuming user ID is available in the user object, use optional chaining
+        userId: user._id,
         address: selectedAddress._id,
         items: cartItemsArray,
         amount,
