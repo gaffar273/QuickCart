@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
   ],
   amount: { type: Number, required: true },
   address: { type: mongoose.Schema.Types.ObjectId, ref: "address", required: true },
-  status: { type: String, required: true, default: "order Placed" },
+  status: { type: String, required: true, default: "Verification Pending" },
   date: { type: Number, required: true },
   paymentType:{type:String,required:true},
   isPaid:{type:Boolean,required:true,default:false}

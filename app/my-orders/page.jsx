@@ -68,9 +68,7 @@ const MyOrders = () => {
                                     <p>
                                         <span className="font-medium">{order.address.fullName}</span>
                                         <br />
-                                        <span >{order.address.area}</span>
-                                        <br />
-                                        <span>{`${order.address.city}, ${order.address.state}`}</span>
+                                        <span>{order.address.hallOfResidence}</span>
                                         <br />
                                         <span>{order.address.phoneNumber}</span>
                                     </p>
@@ -80,6 +78,8 @@ const MyOrders = () => {
                                     <span>Method : {order.paymentType}</span>
                                     <span>Date : {new Date(order.date).toLocaleDateString()}</span>
                                     <span>Payment : {order.isPaid ? "✅ Paid" : "❌ Pending"}</span>
+                                    <span>Status: <span className="text-orange-600">{order.status || "Verification Pending"}</span></span>
+                                    <div className="text-xs text-gray-500 mt-1">Our team will contact you shortly</div>
                                     {!order.isPaid && (
                                         <BookNowButton orderId={order._id} amount={order.amount} />
                                     )}

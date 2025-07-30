@@ -183,6 +183,37 @@ const Orders = () => {
                     <span>Method: {order.paymentType}</span>
                     <span>Payment: {order.isPaid ? "✅ Paid" : "❌ Pending"}</span>
                     <span>Date: {new Date(order.date).toLocaleDateString()}</span>
+                    <div className="mt-2">
+                      <label className="block text-sm font-medium text-gray-700">Order Status:</label>
+                      <select 
+                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        value={order.status || "Verification Pending"}
+                        onChange={async (e) => {
+                          try {
+                            const token = await getToken();
+                            const { data } = await axios.put(`/api/order/update-status/${order._id}`, 
+                              { status: e.target.value },
+                              { headers: { Authorization: `Bearer ${token}` } }
+                            );
+                            if (data.success) {
+                              toast.success("Status updated successfully");
+                              fetchSellerOrders(); // Refresh orders
+                            } else {
+                              toast.error(data.message);
+                            }
+                          } catch (error) {
+                            toast.error("Failed to update status");
+                          }
+                        }}
+                      >
+                        <option value="Verification Pending">Verification Pending</option>
+                        <option value="Verified">Verified</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    </div>
                   </p>
                 </div>
               </div>

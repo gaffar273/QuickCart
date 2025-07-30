@@ -4,8 +4,14 @@ import React from 'react';
 const BookNowButton = ({ orderId, amount }) => {
   const handleBooking = () => {
     // Replace this URL with your actual Google Form link
-    const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/edit?usp=drivesdk";
-    window.open(googleFormUrl, '_blank');
+    // Adding order details as URL parameters for pre-filling the form
+    const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/viewform";
+    
+    // Add order details as URL parameters
+    const formWithParams = `${googleFormUrl}?usp=pp_url&entry.12345=${orderId}&entry.67890=${amount}`;
+    
+    // Open the form in a new tab
+    window.open(formWithParams, '_blank');
   };
 
   return (
@@ -18,4 +24,4 @@ const BookNowButton = ({ orderId, amount }) => {
   );
 };
 
-export default BookNowButton; 
+export default BookNowButton;

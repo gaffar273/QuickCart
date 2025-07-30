@@ -12,11 +12,10 @@ export async function GET(request) {
 
         const isSeller=await authSeller(userId)
         if(!isSeller){
-            return NextRequest.json({success:false,message:'not authorized'})
+            return NextResponse.json({success:false,message:'not authorized'})
         }
 
         await connectDB()
-        Address.length
 
         const orders=await Order.find({}).populate('address items.product')
 

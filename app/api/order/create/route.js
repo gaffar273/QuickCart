@@ -14,7 +14,7 @@ export async function POST (request){
         if (!userId) {
             return NextResponse.json({ success: false, message: "User not authenticated" }, { status: 401 });
         }
-        const {address,items, amount: clientAmount} = await request.json()
+        const {address, items, amount: clientAmount, status} = await request.json()
 
         if(!address || items.length===0){
             return NextResponse.json({success:false,message:"Invalid data"})
@@ -30,14 +30,15 @@ export async function POST (request){
             return NextResponse.json({success:false,message:"Amount mismatch"})
         }
 
-        await Order.create({
+        const order = await Order.create({
                 userId,
                 address,
                 items,
                 amount,
                 date:Date.now(),
                 paymentType:'Booking',
-                isPaid: false
+                isPaid: false,
+                status: status || 'Verification Pending'
         })
 
         //clr user cart
@@ -45,7 +46,7 @@ export async function POST (request){
         user.cartItems={}
         await user.save()
 
-        return NextResponse.json({success:true,message:'order placed'})
+        return NextResponse.json({success:true, message:'order placed', order})
     }
     catch(error){
         return NextResponse.json({success:false,message:error.message})

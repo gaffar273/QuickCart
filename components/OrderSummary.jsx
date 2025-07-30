@@ -56,13 +56,21 @@ const OrderSummary = () => {
         const { data } = await axios.post('/api/order/create', {
           address: selectedAddress._id,
           items: cartItemsArray,
-          amount
+          amount,
+          status: "Verification Pending" // Set initial status
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (data.success) {
           toast.success(data.message)
           setCartItems({})
+          
+          // Open Google Form in a new tab with order details
+          const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/viewform";
+          const formWithParams = `${googleFormUrl}?usp=pp_url&entry.12345=${data.order._id}&entry.67890=${amount}`;
+          window.open(formWithParams, '_blank');
+          
+          // Redirect to order placed page
           router.push('/order-placed')
         } else {
           toast.error(data.message)
