@@ -25,15 +25,19 @@ const BookNowButton = ({ selectedAddress, cartItems, getCartAmount }) => {
       const token = await getToken();
       const amount = getCartAmount();
 
+      const orderData = {
+        userId: user?._id, // Assuming user ID is available in the user object, use optional chaining
+        address: selectedAddress._id,
+        items: cartItemsArray,
+        amount,
+        paymentType: "Google Form",
+      };
+
+      console.log("Order data being sent:", orderData); // Log the data
+
       const { data } = await axios.post(
         '/api/order/manual-add',
-        {
-          userId: user._id, // Assuming user ID is available in the user object
-          address: selectedAddress._id,
-          items: cartItemsArray,
-          amount,
-          paymentType: "Google Form",
-        },
+        orderData,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -49,6 +53,7 @@ const BookNowButton = ({ selectedAddress, cartItems, getCartAmount }) => {
         toast.error(data.message);
       }
     } catch (error) {
+      console.error("Order booking failed:", error); // Log the error
       toast.error(error.message);
     }
   };
