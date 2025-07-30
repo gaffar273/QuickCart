@@ -101,7 +101,8 @@ import Footer from "@/components/seller/Footer";
 import Loading from "@/components/Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
-import PayNowButton from "@/components/PayNowButton";
+import BookNowButton from '@/components/BookNowButton';
+
 
 const Orders = () => {
   const { currency, getToken, user } = useAppContext();
