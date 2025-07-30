@@ -9,13 +9,18 @@ export async function POST(request) {
             return NextResponse.json({ success: false, message: "Invalid data provided" }, { status: 400 });
         }
 
+        // Check if paymentType is "Google Form"
+        if (paymentType !== "Google Form") {
+            return NextResponse.json({ success: false, message: "Only Google Form payment type is allowed" }, { status: 400 });
+        }
+
         const newOrder = await Order.create({
             userId,
             address,
             items,
             amount,
             date: Date.now(),
-            paymentType: paymentType, // You can specify the payment type here, e.g., 'Google Form'
+            paymentType: "Google Form", // Hardcoded to Google Form as per requirement
             isPaid: false, // Initially set as not paid
             status: 'Booked' // Set the initial status to Booked
         });
