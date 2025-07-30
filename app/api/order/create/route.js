@@ -14,9 +14,9 @@ export async function POST (request){
         if (!userId) {
             return NextResponse.json({ success: false, message: "User not authenticated" }, { status: 401 });
         }
-        const {address,items, amount: clientAmount} = await request.json()
+        const {address,items, amount: clientAmount, paymentType} = await request.json()
 
-        if(!address || items.length===0){
+        if(!address || items.length===0 || !paymentType){
             return NextResponse.json({success:false,message:"Invalid data"})
         }
 
@@ -36,8 +36,8 @@ export async function POST (request){
                 items,
                 amount,
                 date:Date.now(),
-                paymentType:'Booking',
-                isPaid: false
+                paymentType,
+                isPaid: paymentType === 'Prepaid' ? true : false
         })
 
         //clr user cart
