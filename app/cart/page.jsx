@@ -9,7 +9,7 @@ import { useAppContext } from "@/context/AppContext";
 const Cart = () => {
 
   const { products, router, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
-  const [paymentMethod, setPaymentMethod] = useState('Prepaid'); // Default to Prepaid
+  const [paymentMethod, setPaymentMethod] = useState('Google Form'); // Default to Google Form
 
   return (
     <>
@@ -111,22 +111,12 @@ const Cart = () => {
               <label className="flex items-center gap-2">
                 <input
                   type="radio"
-                  value="Prepaid"
-                  checked={paymentMethod === 'Prepaid'}
-                  onChange={() => setPaymentMethod('Prepaid')}
+                  value="Google Form"
+                  checked={paymentMethod === 'Google Form'}
+                  onChange={() => setPaymentMethod('Google Form')}
                   className="form-radio text-[#3e51df]"
                 />
-                Prepaid (Razorpay)
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  value="Cash on Delivery"
-                  checked={paymentMethod === 'Cash on Delivery'}
-                  onChange={() => setPaymentMethod('Cash on Delivery')}
-                  className="form-radio text-[#3e51df]"
-                />
-                Cash on Delivery
+                Google Form
               </label>
             </div>
           </div>
