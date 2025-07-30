@@ -1,5 +1,5 @@
 'use client'
-import React from "react";
+import React, { useState } from "react";
 import { assets } from "@/assets/assets";
 import OrderSummary from "@/components/OrderSummary";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import { useAppContext } from "@/context/AppContext";
 const Cart = () => {
 
   const { products, router, cartItems, addToCart, updateCartQuantity, getCartCount } = useAppContext();
+  const [paymentMethod, setPaymentMethod] = useState('Google Form'); // Default to Google Form
 
   return (
     <>
@@ -102,6 +103,24 @@ const Cart = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Payment Method Selection */}
+          <div className="mt-6">
+            <p className="text-xl text-gray-700 font-medium mb-3">Select Payment Method</p>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  value="Google Form"
+                  checked={paymentMethod === 'Google Form'}
+                  onChange={() => setPaymentMethod('Google Form')}
+                  className="form-radio text-[#3e51df]"
+                />
+                Google Form
+              </label>
+            </div>
+          </div>
+
           <button onClick={()=> router.push('/all-products')} className="group flex items-center mt-6 gap-2 text-orange-600">
             <Image
               className="group-hover:-translate-x-1 transition"
@@ -111,7 +130,7 @@ const Cart = () => {
             Continue Shopping
           </button>
         </div>
-        <OrderSummary />
+        <OrderSummary paymentMethod={paymentMethod} />
       </div>
     </>
   );

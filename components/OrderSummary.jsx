@@ -3,6 +3,7 @@ import { useAppContext } from "@/context/AppContext";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import BookNowButton from "./BookNowButton"; // Import the new component
 
 const OrderSummary = () => {
 
@@ -56,21 +57,13 @@ const OrderSummary = () => {
         const { data } = await axios.post('/api/order/create', {
           address: selectedAddress._id,
           items: cartItemsArray,
-          amount,
-          status: "Verification Pending" // Set initial status
+          amount
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (data.success) {
           toast.success(data.message)
           setCartItems({})
-          
-          // Open Google Form in a new tab with order details
-          const googleFormUrl = "https://docs.google.com/forms/d/1BnM2WhwP4lV2CdZazEn9z6uDhUiKBQddAwBvyoaVlVs/viewform";
-          const formWithParams = `${googleFormUrl}?usp=pp_url&entry.12345=${data.order._id}&entry.67890=${amount}`;
-          window.open(formWithParams, '_blank');
-          
-          // Redirect to order placed page
           router.push('/order-placed')
         } else {
           toast.error(data.message)
@@ -180,9 +173,12 @@ const OrderSummary = () => {
         </div>
       </div>
 
-      <button onClick={createOrder} className="w-full bg-orange-600 text-white py-3 mt-5 hover:bg-orange-700">
-        Book Your Order
-      </button>
+      {/* Use the new BookNowButton component */}      
+      <BookNowButton 
+        selectedAddress={selectedAddress}
+        cartItems={cartItems}
+        getCartAmount={getCartAmount}
+      />
     </div>
   );
 };

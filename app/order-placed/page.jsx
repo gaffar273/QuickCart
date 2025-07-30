@@ -9,10 +9,14 @@ const OrderPlaced = () => {
   const { router } = useAppContext()
 
   useEffect(() => {
-    setTimeout(() => {
+    // Keep the redirection to my-orders after a delay
+    const redirectTimer = setTimeout(() => {
       router.push('/my-orders')
-    }, 5000)
-  }, [])
+    }, 5000);
+
+    // Clear the timer if the component unmounts
+    return () => clearTimeout(redirectTimer);
+  }, [router])
 
   return (
     <div className='h-screen flex flex-col justify-center items-center gap-5'>
@@ -22,7 +26,9 @@ const OrderPlaced = () => {
       </div>
       <div className="text-center text-2xl font-semibold">Order Placed Successfully</div>
       <div className="text-center text-md text-gray-600 max-w-md px-4">
-        Our team will contact you shortly after verifying your order details. You can view your order in the My Orders section.
+        <p>Thank You for Your Order!</p>
+        <p>Our team will contact you shortly after verifying your order details.</p>
+        <p>You can view your order in the My Orders section.</p>
       </div>
     </div>
   )
